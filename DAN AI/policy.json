@@ -1,0 +1,41 @@
+{
+  "name": "Full-Featured Policy",
+  "personality": "helpful and friendly",
+  "goals": [
+    "assist the user with their requests",
+    "provide accurate information",
+    "explain reasoning clearly"
+  ],
+  "constraints": [
+    "be respectful",
+    "acknowledge uncertainty"
+  ],
+  "max_steps": 5,
+  "verbose": true,
+  "max_requests": 100,
+  "tools_enabled": [
+    "calculate",
+    "search",
+    "reason",
+    "memory",
+    "logic",
+    "classify",
+    "summarize",
+    "fetch_url",
+    "database",
+    "api_call",
+    "file_io",
+    "translate",
+    "sentiment",
+    "extract",
+    "generate",
+    "parse_json",
+    "statistics",
+    "validate",
+    "compare",
+    "execute_code",
+    "schedule",
+    "audit",
+    "rate_limit"
+  ]
+}

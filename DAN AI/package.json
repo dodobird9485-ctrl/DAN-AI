@@ -1,0 +1,47 @@
+{
+  "name": "dan-ai-agent",
+  "displayName": "DAN AI Agent",
+  "description": "AI Assistant with code generation, web search, and customizable policy",
+  "version": "1.0.0",
+  "publisher": "NoahTaylor",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "AI",
+    "Developer Tools"
+  ],
+  "activationEvents": [
+    "onCommand:danAi.openPanel",
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "danAi.openPanel",
+        "title": "Open DAN AI Agent",
+        "category": "DAN AI"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "danAi.openPanel",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "echo 'Extension ready for VS Code'",
+    "test": "node ./test.js",
+    "compile": "echo 'No compilation needed'"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.70.0"
+  }
+}

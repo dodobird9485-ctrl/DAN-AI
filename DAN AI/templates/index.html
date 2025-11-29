@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAN AI Coding Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.50.0/min/vs/editor/editor.main.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.50.0/min/vs/loader.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-container {
+            display: flex;
+            height: 100vh;
+            gap: 0;
+        }
+        .sidebar {
+            width: 280px;
+            background: #161b22;
+            border-right: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .sidebar-tabs {
+            display: flex;
+            background: #0d1117;
+            border-bottom: 1px solid #30363d;
+        }
+        .sidebar-tab {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            color: #8b949e;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-size: 12px;
+            border-bottom: 3px solid transparent;
+        }
+        .sidebar-tab.active {
+            color: #58a6ff;
+            border-bottom-color: #58a6ff;
+        }
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .file-tree {
+            display: none;
+        }
+        .file-tree.active {
+            display: block;
+        }
+        .file-item {
+            padding: 6px 8px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+        .file-item:hover {
+            background: #238636;
+        }
+        .file-item.active {
+            background: #58a6ff;
+            color: #fff;
+        }
+        .file-item.folder {
+            font-weight: 600;
+            color: #79c0ff;
+        }
+        .file-indent { margin-left: 16px; }
+        .file-indent-2 { margin-left: 32px; }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .tabs {
+            display: flex;
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+        .tab-button {
+            padding: 12px 24px;
+            background: transparent;
+            color: #8b949e;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        .tab-button.active {
+            color: #58a6ff;
+            border-bottom-color: #58a6ff;
+        }
+        .tab-button:hover {
+            color: #c9d1d9;
+        }
+        .tab-content {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .tab-content.active {
+            display: flex;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            padding: 10px 15px;
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            flex-wrap: wrap;
+        }
+        .action-buttons button {
+            padding: 6px 12px;
+            background: #238636;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .action-buttons button:hover {
+            background: #2ea043;
+        }
+
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .editor-filename {
+            padding: 8px 15px;
+            background: #0d1117;
+            border-bottom: 1px solid #30363d;
+            font-size: 11px;
+            color: #8b949e;
+        }
+        .editor-content {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+            background: #0d1117;
+        }
+        .editor-content pre {
+            margin: 0;
+            padding: 15px;
+        }
+
+        .terminal-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0d1117;
+            overflow: hidden;
+        }
+        .terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #c9d1d9;
+        }
+        .terminal-line {
+            margin-bottom: 2px;
+        }
+        .terminal-error {
+            color: #f85149;
+        }
+        .terminal-success {
+            color: #3fb950;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            padding: 12px 15px;
+            border-radius: 6px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            max-width: 85%;
+        }
+        .user-message {
+            background: #238636;
+            color: #fff;
+            margin-left: auto;
+            border-left: 4px solid #3fb950;
+        }
+        .agent-message {
+            background: #21262d;
+            color: #c9d1d9;
+            margin-right: auto;
+            border-left: 4px solid #58a6ff;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 8px;
+            padding: 12px 15px;
+            background: #0d1117;
+            border-top: 1px solid #30363d;
+        }
+        input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #30363d;
+            background: #161b22;
+            color: #c9d1d9;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        input:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        button {
+            padding: 8px 16px;
+            background: #238636;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+        }
+        button:hover:not(:disabled) {
+            background: #2ea043;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div style="padding: 8px 12px; background: #0d1117; border-bottom: 1px solid #30363d; font-size: 11px; color: #8b949e;">
+                👤 User: <span id="userDisplay" style="color: #58a6ff;"></span>
+            </div>
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" onclick="switchSidebarTab('files')">📁 Files</button>
+                <button class="sidebar-tab" onclick="switchSidebarTab('commands')">⚙️ Cmd</button>
+            </div>
+            <div class="sidebar-content">
+                <div id="filesPanel" class="file-tree active"></div>
+                <div id="commandsPanel" class="file-tree">
+                    <div class="action-buttons" style="flex-direction: column; gap: 6px;">
+                        <button onclick="createNewFile()" style="width: 100%;">+ New File</button>
+                        <button onclick="createNewFolder()" style="width: 100%;">+ New Folder</button>
+                        <button onclick="switchTab('terminal')" style="width: 100%;">▶ Terminal</button>
+                        <button onclick="buildProject()" style="width: 100%;">🔨 Build</button>
+                        <button onclick="exportProject()" style="width: 100%;">💾 Export Project</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('editor')">Code Editor</button>
+                <button class="tab-button" onclick="switchTab('terminal')">Terminal</button>
+                <button class="tab-button" onclick="switchTab('chat')">Chat</button>
+            </div>
+
+            <!-- Editor Tab -->
+            <div id="editor" class="tab-content active">
+                <div class="action-buttons">
+                    <button onclick="saveFile()">💾 Save</button>
+                    <button onclick="deleteFile()">🗑️ Delete</button>
+                    <button onclick="runFile()">▶ Run File</button>
+                </div>
+                <div class="editor-filename" id="editorTitle">Select a file to view</div>
+                <div id="editorContainer" style="flex: 1; position: relative;"></div>
+            </div>
+
+            <!-- Terminal Tab -->
+            <div id="terminal" class="tab-content">
+                <div class="terminal-area">
+                    <div class="terminal-output" id="terminalOutput"></div>
+                </div>
+                <div class="input-section">
+                    <input type="text" id="cmdInput" placeholder="Enter command..." />
+                    <button onclick="executeCommand()">Execute</button>
+                </div>
+            </div>
+
+            <!-- Chat Tab -->
+            <div id="chat" class="tab-content">
+                <div class="messages" id="messages">
+                    <div class="agent-message">✓ DAN AI Coding Suite loaded!</div>
+                </div>
+                <div class="input-section">
+                    <input type="text" id="input" placeholder="Ask me anything..." />
+                    <button id="send" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFile = null;
+        let allFiles = [];
+        let userId = localStorage.getItem('userId');
+        let editor = null;
+        
+        if (!userId) {
+            userId = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('userId', userId);
+        }
+        
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.50.0/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            editor = monaco.editor.create(document.getElementById('editorContainer'), {
+                value: 'Select a file from the sidebar or create a new one',
+                language: 'plaintext',
+                theme: 'vs-dark',
+                fontFamily: 'Fira Code, monospace',
+                fontSize: 13,
+                minimap: { enabled: true },
+                formatOnPaste: true,
+                formatOnType: true,
+                wordWrap: 'on',
+                scrollBeyondLastLine: false
+            });
+        });
+
+        function switchSidebarTab(tab) {
+            document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('[id$="Panel"]').forEach(p => p.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Panel').classList.add('active');
+            if (tab === 'files') loadFileList();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target?.classList?.add('active');
+        }
+
+        async function loadFileList() {
+            try {
+                const res = await fetch(`/api/user_files?user=${userId}`);
+                const data = await res.json();
+                renderFileList(data.files || []);
+            } catch (e) {
+                console.error('Failed to load files:', e);
+            }
+        }
+
+        function renderFileList(files, indent = 0) {
+            const panel = document.getElementById('filesPanel');
+            if (indent === 0) panel.innerHTML = '';
+            
+            files.forEach(file => {
+                const div = document.createElement('div');
+                div.className = 'file-item' + (file.folder ? ' folder' : '');
+                if (indent > 0) div.classList.add('file-indent' + (indent > 1 ? '-2' : ''));
+                div.textContent = (file.folder ? '📁 ' : '📄 ') + file.name;
+                div.onclick = () => !file.folder && loadFile(file.path);
+                panel.appendChild(div);
+                if (file.folder && file.children) {
+                    renderFileList(file.children, indent + 1);
+                }
+            });
+        }
+
+        async function loadFile(path) {
+            try {
+                const res = await fetch('/api/read_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path, userId })
+                });
+                const data = await res.json();
+                if (data.error) {
+                    addTerminalLine('ERROR: ' + data.error, 'error');
+                    return;
+                }
+                if (!editor) {
+                    setTimeout(() => loadFile(path), 500);
+                    return;
+                }
+                document.getElementById('editorTitle').textContent = '📄 ' + path;
+                currentFile = path;
+                
+                const ext = path.split('.').pop().toLowerCase();
+                const languageMap = {
+                    'py': 'python', 'js': 'javascript', 'jsx': 'javascript',
+                    'ts': 'typescript', 'tsx': 'typescript', 'json': 'json',
+                    'html': 'html', 'htm': 'html', 'css': 'css', 'scss': 'scss',
+                    'java': 'java', 'cpp': 'cpp', 'c': 'c', 'cs': 'csharp',
+                    'rb': 'ruby', 'php': 'php', 'go': 'go', 'rs': 'rust',
+                    'md': 'markdown', 'xml': 'xml', 'yaml': 'yaml', 'yml': 'yaml',
+                    'sh': 'shell', 'bash': 'shell', 'sql': 'sql', 'txt': 'plaintext'
+                };
+                const language = languageMap[ext] || 'plaintext';
+                monaco.editor.setModelLanguage(editor.getModel(), language);
+                editor.setValue(data.content);
+            } catch (e) {
+                console.error('Failed to load file:', e);
+            }
+        }
+
+        function saveFile() {
+            if (!currentFile || !editor) {
+                alert('No file selected');
+                return;
+            }
+            const content = editor.getValue();
+            fetch('/api/write_file', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: currentFile, content, userId })
+            }).then(r => r.json()).then(d => {
+                addTerminalLine(d.error ? '❌ Save failed: ' + d.error : '✓ File saved: ' + currentFile, d.error ? 'error' : 'success');
+            });
+        }
+
+        function deleteFile() {
+            if (!currentFile) {
+                alert('No file selected');
+                return;
+            }
+            if (confirm('Delete ' + currentFile + '?')) {
+                fetch('/api/delete_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: currentFile, userId })
+                }).then(r => r.json()).then(d => {
+                    addTerminalLine(d.error ? '❌ Delete failed: ' + d.error : '✓ Deleted: ' + currentFile, d.error ? 'error' : 'success');
+                    loadFileList();
+                });
+            }
+        }
+
+        function runFile() {
+            if (!currentFile) {
+                alert('No file selected');
+                return;
+            }
+            addTerminalLine('▶ Running: ' + currentFile);
+            fetch('/api/run_file', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: currentFile, userId })
+            }).then(r => r.json()).then(d => {
+                if (d.output) {
+                    d.output.split('\n').forEach(line => {
+                        if (line) addTerminalLine(line);
+                    });
+                }
+                if (d.error) addTerminalLine('ERROR: ' + d.error, 'error');
+            });
+        }
+
+        function createNewFile() {
+            const name = prompt('New file name:', 'file.txt');
+            if (name) {
+                fetch('/api/create_file', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, userId })
+                }).then(r => r.json()).then(d => {
+                    addTerminalLine(d.error ? '❌ ' + d.error : '✓ Created: ' + name, d.error ? 'error' : 'success');
+                    setTimeout(loadFileList, 500);
+                });
+            }
+        }
+
+        function createNewFolder() {
+            const name = prompt('New folder name:', 'folder');
+            if (name) {
+                fetch('/api/create_folder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, userId })
+                }).then(r => r.json()).then(d => {
+                    addTerminalLine(d.error ? '❌ ' + d.error : '✓ Created folder: ' + name, d.error ? 'error' : 'success');
+                    loadFileList();
+                });
+            }
+        }
+
+        function executeCommand() {
+            const cmd = document.getElementById('cmdInput').value.trim();
+            if (!cmd) return;
+            addTerminalLine('$ ' + cmd);
+            document.getElementById('cmdInput').value = '';
+            fetch('/api/execute_cmd', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cmd })
+            }).then(r => r.json()).then(d => {
+                if (d.output) {
+                    d.output.split('\n').forEach(line => {
+                        if (line) addTerminalLine(line);
+                    });
+                }
+                if (d.error) addTerminalLine('ERROR: ' + d.error, 'error');
+            });
+        }
+
+        function buildProject() {
+            addTerminalLine('🔨 Building project...');
+            fetch('/api/build', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            }).then(r => r.json()).then(d => {
+                if (d.output) {
+                    d.output.split('\n').forEach(line => {
+                        if (line) addTerminalLine(line);
+                    });
+                }
+                if (d.error) addTerminalLine('ERROR: ' + d.error, 'error');
+            });
+        }
+
+        function exportProject() {
+            addTerminalLine('📦 Exporting project...');
+            fetch('/api/export_project', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId })
+            }).then(r => {
+                if (r.ok) {
+                    return r.blob().then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `project_${userId}.zip`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        addTerminalLine('✓ Project exported successfully!', 'success');
+                    });
+                } else {
+                    return r.json().then(d => {
+                        addTerminalLine('ERROR: ' + (d.error || 'Export failed'), 'error');
+                    });
+                }
+            }).catch(e => {
+                addTerminalLine('ERROR: ' + e.message, 'error');
+            });
+        }
+
+        function addTerminalLine(text, type = 'normal') {
+            const output = document.getElementById('terminalOutput');
+            const line = document.createElement('div');
+            line.className = 'terminal-line' + (type ? ' terminal-' + type : '');
+            line.textContent = text;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function addMessage(text, isUser = false) {
+            const messagesDiv = document.getElementById('messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = isUser ? 'message user-message' : 'message agent-message';
+            msgDiv.textContent = text;
+            messagesDiv.appendChild(msgDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('input').value.trim();
+            if (!input) return;
+            addMessage(input, true);
+            document.getElementById('input').value = '';
+            try {
+                const response = await fetch('/api/think', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ input, userId })
+                });
+                const data = await response.json();
+                addMessage(data.response, false);
+                setTimeout(loadFileList, 1000);
+            } catch (err) {
+                addMessage('Error: ' + err.message, false);
+            }
+        }
+
+        document.getElementById('input')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        document.getElementById('cmdInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') executeCommand();
+        });
+
+        document.getElementById('userDisplay').textContent = userId.substr(5, 8);
+
+        loadFileList();
+    </script>
+</body>
+</html>

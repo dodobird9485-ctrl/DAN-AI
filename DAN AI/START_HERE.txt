@@ -1,0 +1,62 @@
+🤖 AI AGENT - START HERE
+========================
+
+1. DOUBLE-CLICK: RUN.bat
+
+2. Type anything:
+   - hello
+   - 5 + 3
+   - remember my name is john
+   - translate hello to spanish
+   - generate a funny joke
+   - what is AI?
+
+3. Agent will respond to everything!
+
+4. Type "exit" to quit
+
+========================
+
+CHANGE AGENT PERSONALITY
+========================
+
+1. Open "policy.json" in notepad
+2. Change "personality": "YOUR TEXT HERE"
+3. Save file
+4. Run RUN.bat again
+
+Example:
+   "personality": "funny and playful"
+   "personality": "technical and smart"
+   "personality": "formal and professional"
+
+========================
+
+USE DIFFERENT POLICIES
+======================
+
+See "policies.txt" for pre-made policies:
+- Funny Bot
+- Data Analyst
+- Code Helper
+- Translator
+
+Copy policy from policies.txt to policy.json
+and restart the agent!
+
+========================
+
+TROUBLESHOOTING
+===============
+
+If agent doesn't respond:
+1. Close RUN.bat window
+2. Delete policy.json
+3. Open policies.txt
+4. Copy SMART ASSISTANT policy
+5. Create new policy.json
+6. Paste content
+7. Save
+8. Run RUN.bat again
+
+========================

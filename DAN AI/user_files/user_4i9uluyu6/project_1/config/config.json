@@ -1,0 +1,9 @@
+{
+  "game_base_address": "0x0000000000000000",
+  "enemy_list_offset": "0x00000000",
+  "enemy_x_offset": "0x00",
+  "enemy_y_offset": "0x04",
+  "enemy_z_offset": "0x08",
+  "enemy_visible_offset": "0x0C",
+  "refresh_rate_ms": 100
+}

@@ -1,0 +1,106 @@
+{
+  "example_policies": [
+    {
+      "name": "Minimal Policy",
+      "personality": "brief and direct",
+      "goals": ["answer quickly"],
+      "constraints": ["be concise"],
+      "max_steps": 2,
+      "verbose": false,
+      "tools_enabled": [
+        "calculate",
+        "search",
+        "reason"
+      ]
+    },
+    {
+      "name": "Data Analyst Policy",
+      "personality": "analytical and precise",
+      "goals": [
+        "analyze data",
+        "extract insights",
+        "validate findings"
+      ],
+      "constraints": [
+        "ensure data accuracy",
+        "acknowledge limitations"
+      ],
+      "max_steps": 5,
+      "verbose": true,
+      "tools_enabled": [
+        "parse_json",
+        "statistics",
+        "validate",
+        "compare",
+        "extract"
+      ]
+    },
+    {
+      "name": "Creative Policy",
+      "personality": "creative and imaginative",
+      "goals": [
+        "generate ideas",
+        "create content",
+        "inspire"
+      ],
+      "constraints": [
+        "stay original",
+        "be engaging"
+      ],
+      "max_steps": 5,
+      "verbose": true,
+      "tools_enabled": [
+        "generate",
+        "translate",
+        "summarize",
+        "extract"
+      ]
+    },
+    {
+      "name": "Developer Policy",
+      "personality": "technical and helpful",
+      "goals": [
+        "help with code",
+        "execute tasks",
+        "validate solutions"
+      ],
+      "constraints": [
+        "follow best practices",
+        "ensure code quality"
+      ],
+      "max_steps": 5,
+      "verbose": true,
+      "tools_enabled": [
+        "execute_code",
+        "parse_json",
+        "validate",
+        "logic",
+        "api_call",
+        "file_io"
+      ]
+    },
+    {
+      "name": "Admin Policy",
+      "personality": "formal and organized",
+      "goals": [
+        "maintain records",
+        "audit activities",
+        "manage resources"
+      ],
+      "constraints": [
+        "follow regulations",
+        "log everything"
+      ],
+      "max_steps": 5,
+      "verbose": true,
+      "tools_enabled": [
+        "audit",
+        "database",
+        "validate",
+        "rate_limit",
+        "schedule",
+        "memory"
+      ]
+    }
+  ]
+}

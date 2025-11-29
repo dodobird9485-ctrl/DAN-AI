@@ -1,0 +1,137 @@
+🤖 AI AGENT - QUICK START
+==========================
+
+STEP 1: Start the Agent
+-----------------------
+Double-click: START.bat
+
+OR in Command Prompt:
+  cd "C:\Users\Noah Taylor\Downloads\DAN AI"
+  python app.py
+
+
+STEP 2: Open Browser
+---------------------
+Go to: http://localhost:5000
+
+
+STEP 3: Talk to Agent!
+-----------------------
+Examples:
+  • hello
+  • 5 + 3
+  • What is Python?
+  • Remember my birthday is January 1
+  • Translate hello to Spanish
+  • Generate a funny poem
+  • /help (for commands)
+
+
+FEATURES ✨
+-----------
+✓ Web Search (Safe & Unrestricted modes)
+✓ Persistent Memory Storage
+✓ Real Tool Implementations
+✓ Beautiful UI with Real-time Stats
+✓ Command System (/help, /tools, /memory, etc)
+✓ Toggle between Safe/Unrestricted search
+✓ Clear memories, view logs, check stats
+
+
+BUTTONS IN WEB INTERFACE
+------------------------
+🔒 Toggle Search  - Switch between Safe & Unrestricted modes
+🗑️ Clear Mem      - Delete all stored memories
+
+
+SAFE MODE vs UNRESTRICTED
+---------------------------
+SAFE MODE (🔒 Green):
+  • Trusted sites only
+  • Wikipedia, GitHub, Stack Overflow, MDN, Python Docs
+  • Perfect for learning
+  • No malicious content
+
+UNRESTRICTED (🌐 Yellow):
+  • Full web search via DuckDuckGo
+  • All results included
+  • Use when you need full access
+  • Toggle back anytime
+
+
+COMMANDS
+--------
+Type these starting with /:
+
+/help              Show all commands
+/tools             List active tools
+/memory            View stored memories
+/clear_memory      Delete all memories
+/policy            Show agent configuration
+/search_mode       Toggle safe/unrestricted
+/status            Show agent statistics
+
+
+TIPS
+----
+1. Ask questions → Agent searches web
+   "What is machine learning?"
+
+2. Store information → Agent remembers
+   "Remember my favorite color is blue"
+
+3. Generate content → Creative AI
+   "Generate a funny story"
+
+4. Use commands → Get detailed info
+   "/status" shows everything
+
+5. Toggle search mode → Choose safety level
+   "🔒 Toggle Search" button
+
+
+FILES CREATED
+-------------
+agent_advanced.py      - Smart agent with web search
+app.py                 - Web server
+policy.json            - Configuration (with safe_mode)
+memory.json            - Stored memories
+templates/index.html   - Beautiful UI
+ADVANCED_GUIDE.md      - Full feature documentation
+
+
+STOP THE AGENT
+--------------
+Press CTRL+C in the black command window
+
+
+TROUBLESHOOTING
+---------------
+Error: Flask not found?
+  Fix: pip install Flask requests
+
+Agent not responding?
+  Fix: Make sure policy.json is in the same folder
+
+Search not working?
+  Fix: Check internet connection, try /help
+
+Memory not saving?
+  Fix: Check folder permissions
+
+
+SETTINGS
+--------
+Edit policy.json to customize:
+  • "personality": "your personality"
+  • "safe_mode": true or false
+  • "tools_enabled": add/remove tools
+
+
+Questions?
+----------
+See ADVANCED_GUIDE.md for full documentation
+
+
+ENJOY YOUR AI AGENT! 🚀
+========================
